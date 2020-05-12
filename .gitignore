@@ -1,0 +1,6 @@
+build/
+
+# Ignore any accidentally included fonts
+*.bdf
+
+.DS_Store

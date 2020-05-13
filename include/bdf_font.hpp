@@ -19,4 +19,7 @@ class BDFFont {
 		~BDFFont();	
 
 		char * get_bitmap_data(char c);
+
+		int get_char_width();
+		int get_char_height();
 };

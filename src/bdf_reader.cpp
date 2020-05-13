@@ -28,6 +28,7 @@ BDFFont *BDFReader::load_font(std::string path)
 
     const std::string BITMAP_LINE = "BITMAP";
     BDFFontBitmapBoundingBox bounding_box;
+    BDFFontBitmapBoundingBox bbx;
     int current_character = 0;
     int char_stride;
     char *bitmap_data = nullptr;
@@ -54,7 +55,13 @@ BDFFont *BDFReader::load_font(std::string path)
             }
 
             // Read bitmap data
-            for (int i = 0; i < bounding_box.height; i++)
+            // Add y-offset lines
+            for (int i = 0; i < (bbx.offset_y); i++)
+            {
+                bitmap_data[(current_character * char_stride) + i] = 0;
+            }
+
+            for (int i = bbx.offset_y; i < (bbx.height + bbx.offset_y); i++)
             {
                 std::string hstr;
                 f >> hstr;
@@ -64,27 +71,52 @@ BDFFont *BDFReader::load_font(std::string path)
                 ss << std::hex << hstr;
                 ss >> byte;
 
+                // Apply x-offset
+                // Note: This may be changed to not be hard-coded into bitmap data.
+                //  Could instead supply the offset to the user to decide how to offset it?
+                byte = byte >> bbx.offset_x;
+
                 bitmap_data[(current_character * char_stride) + i] = byte;
+            }
+
+            // Append remaining lines
+            for (int i = bbx.height + bbx.offset_y; i < bounding_box.height; i++)
+            {
+                bitmap_data[(current_character * char_stride) + i] = 0;
             }
 
             // Read ENDCHAR
             std::getline(f, line);
         }
 
-        if (key.compare("FONTBOUNDINGBOX") == 0)
+        bool isFontBoundingBox = (key.compare("FONTBOUNDINGBOX") == 0);
+        bool isBBX = (key.compare("BBX") == 0);
+
+        if (isFontBoundingBox || isBBX)
         {
+            BDFFontBitmapBoundingBox tbox = {0, 0, 0, 0};
+
             // Bounding box definition
-            f >> bounding_box.width >> bounding_box.height >> bounding_box.offset_x >> bounding_box.offset_y;
-            char_stride = bounding_box.height;
+            f >> tbox.width >> tbox.height >> tbox.offset_x >> tbox.offset_y;
 
             // Only allow fonts with a width of <= 8 (byte)
-            if (bounding_box.width > 8)
+            if (tbox.width > 8)
             {
                 std::cout << "Error: Only fonts with a width of 8 or less pixels are supported." << std::endl;
                 return nullptr;
             }
+
+            if (isFontBoundingBox)
+            {
+                bounding_box = tbox;
+                char_stride = bounding_box.height;
+            }
+            else if (isBBX)
+            {
+                bbx = tbox;
+            }
         }
-        else if (key.compare("STARTCHAR") == 0)
+        else if (key.compare("ENCODING") == 0)
         {
             // Get current character character
             f >> current_character;

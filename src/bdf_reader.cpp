@@ -58,7 +58,7 @@ BDFFont *BDFReader::load_font(std::string path)
 
             // Read bitmap data
             // Add y-offset lines
-            int above_row_count = ((bounding_box.height - bbx.height) - bbx.offset_y);
+            int above_row_count = ((bounding_box.height - bbx.height) - bbx.offset_y + bounding_box.offset_y);
             for (int i = 0; i < above_row_count; i++)
             {
                 bitmap_data[(current_character * char_stride) + i] = 0;

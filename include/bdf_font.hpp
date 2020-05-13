@@ -1,25 +1,31 @@
 #pragma once
 
-struct BDFFontBitmapBoundingBox {
+namespace BDF
+{
+struct BDFFontBitmapBoundingBox
+{
 	int width;
 	int height;
 	int offset_x;
 	int offset_y;
 };
 
-class BDFFont {
-	private:
-		BDFFontBitmapBoundingBox bounding_box;
-		char *bitmap_data;
+class BDFFont
+{
+private:
+	BDFFontBitmapBoundingBox bounding_box;
+	char *bitmap_data;
 
-		// Stride between character entries in bitmap data
-		int char_bitmap_stride;
-	public:
-		BDFFont(BDFFontBitmapBoundingBox _bounding_box, char * _bitmap_data);
-		~BDFFont();	
+	// Stride between character entries in bitmap data
+	int char_bitmap_stride;
 
-		char * get_bitmap_data(char c);
+public:
+	BDFFont(BDFFontBitmapBoundingBox _bounding_box, char *_bitmap_data);
+	~BDFFont();
 
-		int get_char_width();
-		int get_char_height();
+	char *get_bitmap_data(char c);
+
+	int get_char_width();
+	int get_char_height();
 };
+} // namespace BDF

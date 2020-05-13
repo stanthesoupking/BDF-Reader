@@ -8,7 +8,7 @@ int main(int argc, char **argv)
 {
     std::cout << "BDF Reader v" << BDF_VERSION << "." << std::endl;
 
-    BDFFont *font = BDFReader::load_font("font.bdf");
+    BDF::BDFFont *font = BDF::BDFReader::load_font("font.bdf");
 
     // Get data for the 'A' key
     char *key = font->get_bitmap_data('A');

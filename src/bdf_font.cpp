@@ -1,5 +1,7 @@
 #include "bdf_font.hpp"
 
+using namespace BDF;
+
 BDFFont::BDFFont(BDFFontBitmapBoundingBox _bounding_box, char *_bitmap_data)
 {
 	bounding_box = _bounding_box;

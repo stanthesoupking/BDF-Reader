@@ -5,6 +5,8 @@
 #include <fstream>
 #include <sstream>
 
+using namespace BDF;
+
 BDFFont *BDFReader::load_font(std::string path)
 {
     std::ifstream f(path);

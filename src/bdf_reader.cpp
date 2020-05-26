@@ -50,6 +50,11 @@ BDFFont *BDFReader::load_font(std::string path)
         // Check if start of bitmap data
         if (key.compare("BITMAP") == 0)
         {
+            if ((current_character < 0) || (current_character > 255))
+            {
+                continue;
+            }
+
             // Allocate bitmap data (if not already allocated)
             if (bitmap_data == nullptr)
             {
